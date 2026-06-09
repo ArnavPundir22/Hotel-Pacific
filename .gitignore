@@ -1,0 +1,10 @@
+# Build output
+dist/
+
+# Dependencies
+# (node_modules is partially tracked, so we exclude .vite/ cache directory)
+node_modules/.vite/
+
+# OS metadata
+.DS_Store
+Thumbs.db
