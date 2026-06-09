@@ -1,0 +1,19 @@
+{
+  "name": "hotel-pacific",
+  "version": "1.0.0",
+  "description": "Hotel Pacific website",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@studio-freight/lenis": "^1.0.42",
+    "gsap": "^3.12.5",
+    "split-type": "^0.3.4"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
