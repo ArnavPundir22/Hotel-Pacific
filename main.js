@@ -47,6 +47,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Smooth scroll for anchor links using Lenis
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        lenis.scrollTo(targetElement, {
+          offset: -80, // Adjust for navbar height
+          duration: 1.2
+        });
+      }
+    });
+  });
+
   // Index page specific animations
   if (document.querySelector('.hero')) {
     // 1. Cinematic Hero Parallax
