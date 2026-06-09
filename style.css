@@ -194,20 +194,34 @@ img {
 .hero {
   position: relative;
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
   overflow: hidden;
 }
 
-.hero-bg {
+.hero-slider {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 110%; /* Extra height for parallax */
-  z-index: -1;
+  height: 110%; /* Extra height for GSAP parallax */
+  z-index: 1;
   will-change: transform;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.slide.active {
+  opacity: 1;
+  z-index: 2;
 }
 
 .hero-img {
@@ -215,51 +229,165 @@ img {
   height: 100%;
   object-fit: cover;
   transform-origin: center;
+  transition: transform 8s ease-out;
+  transform: scale(1.05);
 }
 
-.overlay {
+.slide.active .hero-img {
+  transform: scale(1.12); /* Ken Burns Zoom effect */
+}
+
+.hero-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(10,10,12,1) 100%);
+  background: linear-gradient(to bottom, rgba(10,10,12,0.4) 0%, rgba(10,10,12,0) 25%, rgba(10,10,12,0) 75%, rgba(10,10,12,1) 100%);
+  z-index: 3;
+  pointer-events: none;
 }
 
+/* Slider Controls */
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.slider-btn svg {
+  width: 36px;
+  height: 36px;
+  fill: #fff;
+  opacity: 0.5;
+  transition: opacity 0.3s ease, fill 0.3s ease;
+}
+
+.slider-btn:hover svg {
+  opacity: 1;
+  fill: var(--color-primary);
+}
+
+.prev-btn {
+  left: 30px;
+}
+
+.next-btn {
+  right: 30px;
+}
+
+/* Scroll Down Indicator */
+.scroll-down {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.mouse-icon {
+  width: 24px;
+  height: 38px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  position: relative;
+}
+
+.wheel {
+  width: 3px;
+  height: 6px;
+  background-color: #fff;
+  border-radius: 2px;
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: scrollWheel 2s infinite;
+}
+
+@keyframes scrollWheel {
+  0% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, 12px); }
+}
+
+/* Hero Content Overlay */
 .hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
-  z-index: 1;
+  z-index: 5;
   padding: 0 20px;
+  width: 100%;
+  max-width: 900px;
+  pointer-events: none;
 }
 
-.hero .subtitle {
+.hero-content a {
+  pointer-events: auto;
+}
+
+.hero-subtitle {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.1rem;
   text-transform: uppercase;
-  letter-spacing: 4px;
-  margin-bottom: 1rem;
+  letter-spacing: 6px;
+  margin-bottom: 1.5rem;
   color: var(--color-text);
-  animation: fadeInDown 1s ease 0.5s both;
+  opacity: 0;
 }
 
-.hero .title {
-  font-size: 5rem;
+.hero-title {
+  font-size: 5.5rem;
   color: var(--color-primary);
-  margin-bottom: 1rem;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  animation: fadeInUp 1s ease 0.7s both;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  font-family: var(--font-heading);
+  overflow: hidden;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
-.hero .tagline {
-  font-size: 1.25rem;
+/* Character animation container */
+.hero-title .char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.hero-tagline {
+  font-size: 1.35rem;
   color: var(--color-text-muted);
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   font-weight: 300;
-  animation: fadeInUp 1s ease 0.9s both;
+  opacity: 0;
+  letter-spacing: 1px;
 }
 
-.hero .btn-outline {
-  animation: fadeIn 1s ease 1.1s both;
+.hero-btn {
+  opacity: 0;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3.5rem;
+  }
+  .hero-tagline {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
 }
 
 /* About Section */

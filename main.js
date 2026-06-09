@@ -50,9 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Index page specific animations
   if (document.querySelector('.hero')) {
     // 1. Cinematic Hero Parallax
-    gsap.to('.hero-bg', {
-      yPercent: 30,
-      scale: 1.1,
+    gsap.to('.hero-slider', {
+      yPercent: 20,
       ease: "none",
       scrollTrigger: {
         trigger: ".hero",
@@ -62,17 +61,119 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    gsap.to('.hero-content', {
-      yPercent: 50,
+    // Fade out scroll down indicator on scroll
+    gsap.to('.scroll-down', {
       opacity: 0,
+      y: -20,
       ease: "none",
       scrollTrigger: {
         trigger: ".hero",
         start: "top top",
-        end: "bottom top",
+        end: "30% top",
         scrub: true
       }
     });
+
+    // 2. Cinematic Hero Content Reveal (3D Split Text)
+    if (document.querySelector('.hero-content')) {
+      const heroTitle = document.querySelector('.hero-title');
+      const splitTitle = new SplitType(heroTitle, { types: 'chars' });
+      
+      const heroTl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+      // Animate subtitle (letters fade in and spread out slightly)
+      heroTl.fromTo('.hero-subtitle', 
+        { opacity: 0, letterSpacing: "1px", y: -10 },
+        { opacity: 1, letterSpacing: "6px", y: 0, duration: 1.5 },
+        0.2
+      );
+
+      // Animate title characters (3D rotate, slide up, cascade)
+      heroTl.from(splitTitle.chars, {
+        opacity: 0,
+        y: 80,
+        rotateX: -90,
+        transformOrigin: "0% 50% -50",
+        stagger: 0.04,
+        duration: 1.2,
+        ease: "power4.out"
+      }, 0.5);
+
+      // Animate tagline (fade in and slide up)
+      heroTl.fromTo('.hero-tagline',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 1.2 },
+        1.2
+      );
+
+      // Animate CTA Button (fade in and scale up slightly)
+      heroTl.fromTo('.hero-btn',
+        { opacity: 0, scale: 0.9, y: 15 },
+        { opacity: 1, scale: 1, y: 0, duration: 1.0 },
+        1.5
+      );
+
+      // Scroll parallax for hero-content (it moves down slower than scroll speed)
+      gsap.to('.hero-content', {
+        yPercent: 40,
+        opacity: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+    }
+
+    // Hero Slider logic (Contessa style)
+    if (document.querySelector('.hero-slider')) {
+      const slides = document.querySelectorAll('.hero-slider .slide');
+      const prevBtn = document.querySelector('.prev-btn');
+      const nextBtn = document.querySelector('.next-btn');
+      let currentSlide = 0;
+      let slideInterval;
+
+      function showSlide(index) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (index + slides.length) % slides.length;
+        slides[currentSlide].classList.add('active');
+      }
+
+      function nextSlide() {
+        showSlide(currentSlide + 1);
+      }
+
+      function prevSlide() {
+        showSlide(currentSlide - 1);
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          nextSlide();
+          resetInterval();
+        });
+      }
+      
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          prevSlide();
+          resetInterval();
+        });
+      }
+
+      function startInterval() {
+        slideInterval = setInterval(nextSlide, 6000);
+      }
+
+      function resetInterval() {
+        clearInterval(slideInterval);
+        startInterval();
+      }
+
+      startInterval();
+    }
 
     // 4. Parallax Image in About Section
     if (document.querySelector('.about-image-wrapper')) {

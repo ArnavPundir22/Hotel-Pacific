@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
     rel="stylesheet">
 
   <link rel="stylesheet" href="./style.css">
@@ -37,17 +37,45 @@
   <div class="smooth-scroll-wrapper" id="smooth-wrapper">
     <div id="smooth-content">
 
-      <!-- Hero Section -->
+      <!-- Hero Section (Contessa Style Slider) -->
       <section id="home" class="hero">
-        <div class="hero-bg">
-          <img src="/images/hero_background_1780935366448.png" alt="Hotel Pacific Exterior at Sunset" class="hero-img">
-          <div class="overlay"></div>
+        <div class="hero-slider">
+          <div class="slide active">
+            <img src="/images/hero_background_1780935366448.png" alt="Hotel Pacific Exterior at Sunset" class="hero-img">
+          </div>
+          <div class="slide">
+            <img src="/images/premium_suite_1780935469897.png" alt="Premium Suite Accommodation" class="hero-img">
+          </div>
+          <div class="slide">
+            <img src="/images/wedding_hall_1780935429849.png" alt="Grand Wedding Hall" class="hero-img">
+          </div>
+          <div class="slide">
+            <img src="/images/pool_recreation_1780935523659.png" alt="Relaxing Pool Area" class="hero-img">
+          </div>
         </div>
+        <div class="hero-overlay"></div>
+        
+        <!-- Hero Content Overlay -->
         <div class="hero-content">
-          <h2 class="subtitle">Welcome to</h2>
-          <h1 class="title">Hotel Pacific</h1>
-          <p class="tagline">Where Elegance Meets Timeless Celebrations.</p>
-          <a href="#weddings" class="btn-outline magnetic-btn">Explore More</a>
+          <h2 class="hero-subtitle">Welcome to</h2>
+          <h1 class="hero-title">Hotel Pacific</h1>
+          <p class="hero-tagline">Where Elegance Meets Timeless Celebrations.</p>
+          <a href="#weddings" class="btn-outline magnetic-btn hero-btn">Explore More</a>
+        </div>
+        
+        <!-- Slider Navigation Controls -->
+        <button class="slider-btn prev-btn" aria-label="Previous Slide">
+          <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <button class="slider-btn next-btn" aria-label="Next Slide">
+          <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
+        
+        <!-- Scroll Down Indicator -->
+        <div class="scroll-down">
+          <div class="mouse-icon">
+            <div class="wheel"></div>
+          </div>
         </div>
       </section>
 
