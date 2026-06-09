@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. Cinematic Hero Content Reveal (3D Split Text)
     if (document.querySelector('.hero-content')) {
       const heroTitle = document.querySelector('.hero-title');
-      const splitTitle = new SplitType(heroTitle, { types: 'chars' });
+      const splitTitle = new SplitType(heroTitle, { types: 'words, chars' });
       
       const heroTl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
