@@ -6,7 +6,7 @@
   <title>Privacy Policy - Hotel Pacific</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <style>
     .legal-content {
@@ -38,17 +38,38 @@
   <!-- Custom Cursor -->
   <div class="cursor"></div>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo">Hotel Pacific</div>
-    <ul class="nav-links">
-      <li><a href="/index.html#home">Home</a></li>
-      <li><a href="/index.html#about">About</a></li>
-      <li><a href="/index.html#gallery">Gallery</a></li>
-      <li><a href="/index.html#weddings">Weddings</a></li>
-      <li><a href="/index.html#contact" class="btn-primary magnetic-btn">Book Now</a></li>
-    </ul>
-  </nav>
+  <!-- WebGL Background Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Floating Pill Navigation -->
+  <div class="floating-nav">
+    <div class="logo-small">Hotel Pacific</div>
+    <button class="menu-toggle magnetic-btn" aria-label="Toggle Menu">
+      <span class="menu-text">Menu</span>
+      <div class="hamburger">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+      </div>
+    </button>
+  </div>
+
+  <!-- Full Screen Menu Overlay -->
+  <div class="fullscreen-menu">
+    <div class="menu-overlay-bg"></div>
+    <div class="menu-content">
+      <ul class="menu-links">
+        <li><a href="/index.html#home" class="menu-link">Home</a></li>
+        <li><a href="/index.html#narrative" class="menu-link">Experience</a></li>
+        <li><a href="/index.html#about" class="menu-link">Our Story</a></li>
+        <li><a href="/index.html#gallery" class="menu-link">Spaces</a></li>
+        <li><a href="/index.html#weddings" class="menu-link">Weddings</a></li>
+        <li><a href="/index.html#contact" class="menu-link">Contact</a></li>
+      </ul>
+      <div class="menu-footer">
+        <a href="/index.html#contact" class="btn-primary magnetic-btn">Book Your Stay</a>
+      </div>
+    </div>
+  </div>
 
   <div class="smooth-scroll-wrapper" id="smooth-wrapper">
     <div id="smooth-content">

@@ -11,29 +11,66 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <script type="module" crossorigin src="/assets/main-Vug3-pA3.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-CtEDTkAv.css">
+  <script type="module" crossorigin src="/assets/main-CRpdXJ0t.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-mWfJvtmG.css">
 </head>
 
 <body>
+  <!-- WebGL Background Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
   <!-- Custom Cursor -->
   <div class="cursor"></div>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo">Hotel Pacific</div>
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#weddings">Weddings</a></li>
-      <li><a href="#contact" class="btn-primary magnetic-btn">Book Now</a></li>
-    </ul>
-  </nav>
+  <!-- Floating Pill Navigation -->
+  <div class="floating-nav">
+    <div class="logo-small">Hotel Pacific</div>
+    <button class="menu-toggle magnetic-btn" aria-label="Toggle Menu">
+      <span class="menu-text">Menu</span>
+      <div class="hamburger">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+      </div>
+    </button>
+  </div>
+
+  <!-- Full Screen Menu Overlay -->
+  <div class="fullscreen-menu">
+    <div class="menu-overlay-bg"></div>
+    <div class="menu-content">
+      <ul class="menu-links">
+        <li><a href="#home" class="menu-link">Home</a></li>
+        <li><a href="#narrative" class="menu-link">Experience</a></li>
+        <li><a href="#about" class="menu-link">Our Story</a></li>
+        <li><a href="#gallery" class="menu-link">Spaces</a></li>
+        <li><a href="#weddings" class="menu-link">Weddings</a></li>
+        <li><a href="#contact" class="menu-link">Contact</a></li>
+      </ul>
+      <div class="menu-footer">
+        <a href="#contact" class="btn-primary magnetic-btn">Book Your Stay</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vertical Scroll Indicator -->
+  <div class="vertical-indicator">
+    <div class="arrow arrow-up">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </div>
+    <div class="section-numbers">
+      <span class="num active" data-section="home">01</span>
+      <span class="num" data-section="narrative">02</span>
+      <span class="num" data-section="about">03</span>
+      <span class="num" data-section="gallery">04</span>
+      <span class="num" data-section="weddings">05</span>
+      <span class="num" data-section="contact">06</span>
+    </div>
+    <div class="arrow arrow-down">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+    </div>
+  </div>
 
   <div class="smooth-scroll-wrapper" id="smooth-wrapper">
     <div id="smooth-content">
@@ -42,10 +79,11 @@
       <section id="home" class="hero">
         <div class="hero-slider">
           <div class="slide active">
-            <img src="/images/hero_background_1780935366448.png" alt="Hotel Pacific Exterior at Sunset" class="hero-img">
+            <img src="/images/hero_background_1780935366448.png" alt="Hotel Pacific Exterior at Sunset"
+              class="hero-img">
           </div>
           <div class="slide">
-            <img src="/images/premium_suite_1780935469897.png" alt="Premium Suite Accommodation" class="hero-img">
+            <img src="/images/Night_Decoration_View.png" alt="Night_Decoration_View" class="hero-img">
           </div>
           <div class="slide">
             <img src="/images/wedding_hall_1780935429849.png" alt="Grand Wedding Hall" class="hero-img">
@@ -55,7 +93,7 @@
           </div>
         </div>
         <div class="hero-overlay"></div>
-        
+
         <!-- Hero Content Overlay -->
         <div class="hero-content">
           <h2 class="hero-subtitle">Welcome to</h2>
@@ -63,19 +101,42 @@
           <p class="hero-tagline">Where Elegance Meets Timeless Celebrations.</p>
           <a href="#weddings" class="btn-outline magnetic-btn hero-btn">Explore More</a>
         </div>
-        
+
         <!-- Slider Navigation Controls -->
         <button class="slider-btn prev-btn" aria-label="Previous Slide">
-          <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+          </svg>
         </button>
         <button class="slider-btn next-btn" aria-label="Next Slide">
-          <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+          </svg>
         </button>
-        
+
         <!-- Scroll Down Indicator -->
         <div class="scroll-down">
           <div class="mouse-icon">
             <div class="wheel"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Narrative Blend-Mode Section (The Pulse Style) -->
+      <section id="narrative" class="narrative-section">
+        <div class="narrative-bg">
+          <img src="/images/hero_background_1780935366448.png" alt="Hotel Pacific Ambiance">
+          <div class="narrative-gradient-overlay"></div>
+        </div>
+        <div class="narrative-content">
+          <div class="narrative-text-block">
+            <h2 class="blend-text">A legacy of elegance.</h2>
+            <p class="blend-text-small">Nestled in the city's heart, providing tranquility amidst the urban pulse.</p>
+          </div>
+          <div class="narrative-spacer"></div>
+          <div class="narrative-text-block">
+            <h2 class="blend-text">Timeless celebrations.</h2>
+            <p class="blend-text-small">Where every detail is curated to reflect grace, charm, and unforgettable beauty.</p>
           </div>
         </div>
       </section>
@@ -98,7 +159,7 @@
             </blockquote>
           </div>
           <div class="about-image-wrapper">
-            <img src="/images/premium_suite_1780935469897.png" alt="Premium Suite" class="about-img reveal-img">
+            <img src="/images/hero_background_1780935366448.png" alt="Premium Suite" class="about-img reveal-img">
           </div>
         </div>
       </section>
@@ -121,7 +182,7 @@
               <img src="/images/wedding_hall_1780935429849.png" alt="Fine Dining">
             </div>
             <div class="gallery-stack-item">
-              <img src="/images/premium_suite_1780935469897.png" alt="Accommodation">
+              <img src="/images/Night_Decoration_View.png" alt="Night_Decoration_View ">
             </div>
           </div>
         </div>
@@ -250,7 +311,7 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2025 Hotel Pacific. All rights reserved.</p>
+          <p>&copy; 2026 Hotel Pacific. All rights reserved.</p>
           <div class="legal-links">
             <a href="/privacy.html">Privacy Policy</a>
             <a href="/terms.html">Terms of Service</a>

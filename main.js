@@ -2,6 +2,8 @@ import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SplitType from 'split-type';
+import { initWebGLBackground } from './webgl-background.js';
+import { animate } from 'framer-motion/dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,8 +27,14 @@ function raf(time) {
 
 requestAnimationFrame(raf);
 
-// Update GSAP ScrollTrigger to use Lenis scroll
-lenis.on('scroll', ScrollTrigger.update);
+// Update GSAP ScrollTrigger to use Lenis scroll and WebGL
+let webgl;
+lenis.on('scroll', (e) => {
+  ScrollTrigger.update();
+  if (webgl && webgl.material) {
+    webgl.material.uniforms.uScrollOffset.value = e.animatedScroll;
+  }
+});
 
 gsap.ticker.add((time) => {
   lenis.raf(time * 1000);
@@ -37,15 +45,82 @@ gsap.ticker.lagSmoothing(0);
 // Wait for DOM to load
 document.addEventListener("DOMContentLoaded", () => {
   
-  // Navbar scroll effect
-  const navbar = document.querySelector('.navbar');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
+  // Init WebGL Background
+  webgl = initWebGLBackground();
+  
+  // Full-screen Menu Toggle
+  const menuToggle = document.querySelector('.menu-toggle');
+  const fullscreenMenu = document.querySelector('.fullscreen-menu');
+  const menuLinks = document.querySelectorAll('.menu-link');
+  const menuFooter = document.querySelector('.menu-footer');
+  let isMenuOpen = false;
+
+  const menuTl = gsap.timeline({ paused: true, defaults: { ease: "power4.inOut", duration: 0.8 } });
+  
+  menuTl.to(fullscreenMenu, { visibility: "visible", duration: 0 })
+        .to('.menu-overlay-bg', { opacity: 0.98 }, 0)
+        .fromTo(menuLinks, 
+          { y: 50, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.1, duration: 0.8, ease: "power3.out" },
+          "-=0.4"
+        )
+        .fromTo(menuFooter,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
+          "-=0.6"
+        );
+
+  menuToggle.addEventListener('click', () => {
+    isMenuOpen = !isMenuOpen;
+    menuToggle.classList.toggle('active');
+    
+    if (isMenuOpen) {
+      lenis.stop(); // Stop scrolling while menu is open
+      menuTl.play();
     } else {
-      navbar.classList.remove('scrolled');
+      lenis.start();
+      menuTl.reverse();
     }
   });
+
+  // Close menu on link click
+  document.querySelectorAll('.fullscreen-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMenuOpen) {
+        menuToggle.click();
+      }
+    });
+  });
+
+  // Vertical Scroll Indicator Logic
+  const sections = document.querySelectorAll('section');
+  const navNumbers = document.querySelectorAll('.section-numbers .num');
+
+  sections.forEach((sec, i) => {
+    ScrollTrigger.create({
+      trigger: sec,
+      start: "top 50%",
+      end: "bottom 50%",
+      onToggle: self => {
+        if (self.isActive) {
+          const id = sec.getAttribute('id');
+          navNumbers.forEach(num => num.classList.remove('active'));
+          const activeNum = document.querySelector(`.section-numbers .num[data-section="${id}"]`);
+          if (activeNum) activeNum.classList.add('active');
+        }
+      }
+    });
+  });
+
+  // Narrative Section Pinning (The Pulse style)
+  if (document.querySelector('.narrative-section')) {
+    ScrollTrigger.create({
+      trigger: ".narrative-section",
+      start: "top top",
+      end: "bottom bottom",
+      pin: ".narrative-bg"
+    });
+  }
 
   // Smooth scroll for anchor links using Lenis
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -353,14 +428,56 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 8. Custom Cinematic Cursor
+  // 8. Custom Cinematic Cursor & 3D Mouse Parallax
   const cursor = document.querySelector('.cursor');
   const links = document.querySelectorAll('a, .magnetic-btn, .gallery-stack-item');
+  const hero = document.querySelector('.hero');
+  const heroContent = document.querySelector('.hero-content');
+  const heroSlider = document.querySelector('.hero-slider');
 
-  // Center cursor on load if needed, otherwise it starts at 0,0
   gsap.set(cursor, {xPercent: -50, yPercent: -50});
 
+  // 3D Parallax & Tilt Effect
+  if (hero && heroContent && heroSlider) {
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      // Calculate normalized mouse position relative to hero section (-1 to 1)
+      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+      // 3D Tilt for Content
+      gsap.to(heroContent, {
+        rotationY: x * 15,
+        rotationX: -y * 15,
+        x: x * 40,
+        y: y * 40,
+        duration: 0.6,
+        ease: "power2.out"
+      });
+
+      // Opposite Parallax for Background
+      gsap.to(heroSlider, {
+        x: -x * 20,
+        y: -y * 20,
+        duration: 1.0,
+        ease: "power2.out"
+      });
+    });
+
+    hero.addEventListener('mouseleave', () => {
+      gsap.to([heroContent, heroSlider], {
+        rotationY: 0,
+        rotationX: 0,
+        x: 0,
+        y: 0,
+        duration: 1.2,
+        ease: "elastic.out(1, 0.5)"
+      });
+    });
+  }
+
   document.addEventListener('mousemove', (e) => {
+    // Update Custom Cursor
     gsap.to(cursor, {
       x: e.clientX,
       y: e.clientY,
@@ -372,6 +489,31 @@ document.addEventListener("DOMContentLoaded", () => {
   links.forEach(link => {
     link.addEventListener('mouseenter', () => cursor.classList.add('active'));
     link.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+  });
+
+  // Magnetic UI Elements Physics with Framer Motion (replaces GSAP for better physics)
+  const magneticEls = document.querySelectorAll('.magnetic-btn');
+  magneticEls.forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) * 0.4;
+      const y = (e.clientY - rect.top - rect.height / 2) * 0.4;
+      
+      animate(el, { x, y }, { type: "spring", stiffness: 150, damping: 15, mass: 0.1 });
+      
+      const text = el.querySelector('span');
+      if (text) {
+        animate(text, { x: x * 0.5, y: y * 0.5 }, { type: "spring", stiffness: 150, damping: 15, mass: 0.1 });
+      }
+    });
+
+    el.addEventListener('mouseleave', () => {
+      animate(el, { x: 0, y: 0 }, { type: "spring", stiffness: 150, damping: 15, mass: 0.1 });
+      const text = el.querySelector('span');
+      if (text) {
+        animate(text, { x: 0, y: 0 }, { type: "spring", stiffness: 150, damping: 15, mass: 0.1 });
+      }
+    });
   });
 
 });

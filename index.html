@@ -11,28 +11,65 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
+  <!-- WebGL Background Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
   <!-- Custom Cursor -->
   <div class="cursor"></div>
 
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo">Hotel Pacific</div>
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#weddings">Weddings</a></li>
-      <li><a href="#contact" class="btn-primary magnetic-btn">Book Now</a></li>
-    </ul>
-  </nav>
+  <!-- Floating Pill Navigation -->
+  <div class="floating-nav">
+    <div class="logo-small">Hotel Pacific</div>
+    <button class="menu-toggle magnetic-btn" aria-label="Toggle Menu">
+      <span class="menu-text">Menu</span>
+      <div class="hamburger">
+        <span class="line line-1"></span>
+        <span class="line line-2"></span>
+      </div>
+    </button>
+  </div>
+
+  <!-- Full Screen Menu Overlay -->
+  <div class="fullscreen-menu">
+    <div class="menu-overlay-bg"></div>
+    <div class="menu-content">
+      <ul class="menu-links">
+        <li><a href="#home" class="menu-link">Home</a></li>
+        <li><a href="#narrative" class="menu-link">Experience</a></li>
+        <li><a href="#about" class="menu-link">Our Story</a></li>
+        <li><a href="#gallery" class="menu-link">Spaces</a></li>
+        <li><a href="#weddings" class="menu-link">Weddings</a></li>
+        <li><a href="#contact" class="menu-link">Contact</a></li>
+      </ul>
+      <div class="menu-footer">
+        <a href="#contact" class="btn-primary magnetic-btn">Book Your Stay</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vertical Scroll Indicator -->
+  <div class="vertical-indicator">
+    <div class="arrow arrow-up">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </div>
+    <div class="section-numbers">
+      <span class="num active" data-section="home">01</span>
+      <span class="num" data-section="narrative">02</span>
+      <span class="num" data-section="about">03</span>
+      <span class="num" data-section="gallery">04</span>
+      <span class="num" data-section="weddings">05</span>
+      <span class="num" data-section="contact">06</span>
+    </div>
+    <div class="arrow arrow-down">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+    </div>
+  </div>
 
   <div class="smooth-scroll-wrapper" id="smooth-wrapper">
     <div id="smooth-content">
@@ -80,6 +117,25 @@
         <div class="scroll-down">
           <div class="mouse-icon">
             <div class="wheel"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Narrative Blend-Mode Section (The Pulse Style) -->
+      <section id="narrative" class="narrative-section">
+        <div class="narrative-bg">
+          <img src="/images/hero_background_1780935366448.png" alt="Hotel Pacific Ambiance">
+          <div class="narrative-gradient-overlay"></div>
+        </div>
+        <div class="narrative-content">
+          <div class="narrative-text-block">
+            <h2 class="blend-text">A legacy of elegance.</h2>
+            <p class="blend-text-small">Nestled in the city's heart, providing tranquility amidst the urban pulse.</p>
+          </div>
+          <div class="narrative-spacer"></div>
+          <div class="narrative-text-block">
+            <h2 class="blend-text">Timeless celebrations.</h2>
+            <p class="blend-text-small">Where every detail is curated to reflect grace, charm, and unforgettable beauty.</p>
           </div>
         </div>
       </section>
