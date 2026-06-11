@@ -2,9 +2,12 @@
 dist/
 
 # Dependencies
-# (node_modules is partially tracked, so we exclude .vite/ cache directory)
-node_modules/.vite/
+node_modules/
 
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Env
+.env
+.env.*
