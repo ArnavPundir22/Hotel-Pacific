@@ -12,8 +12,7 @@
     "@studio-freight/lenis": "^1.0.42",
     "framer-motion": "^12.40.0",
     "gsap": "^3.12.5",
-    "split-type": "^0.3.4",
-    "three": "^0.184.0"
+    "split-type": "^0.3.4"
   },
   "devDependencies": {
     "vite": "^5.0.0"

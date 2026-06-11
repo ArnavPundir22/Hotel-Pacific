@@ -2,8 +2,6 @@ import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SplitType from 'split-type';
-import { initWebGLBackground } from './webgl-background.js';
-import { animate } from 'framer-motion/dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,14 +25,8 @@ function raf(time) {
 
 requestAnimationFrame(raf);
 
-// Update GSAP ScrollTrigger to use Lenis scroll and WebGL
-let webgl;
-lenis.on('scroll', (e) => {
-  ScrollTrigger.update();
-  if (webgl && webgl.material) {
-    webgl.material.uniforms.uScrollOffset.value = e.animatedScroll;
-  }
-});
+// Update GSAP ScrollTrigger to use Lenis scroll
+lenis.on('scroll', ScrollTrigger.update);
 
 gsap.ticker.add((time) => {
   lenis.raf(time * 1000);
@@ -43,84 +35,104 @@ gsap.ticker.add((time) => {
 gsap.ticker.lagSmoothing(0);
 
 // Wait for DOM to load
-document.addEventListener("DOMContentLoaded", () => {
-  
-  // Init WebGL Background
-  webgl = initWebGLBackground();
-  
-  // Full-screen Menu Toggle
+document.addEventListener('DOMContentLoaded', () => {
+  // --- LUXURY GOLDEN THREAD LOADER ---
+  const luxuryLoader = document.querySelector('.luxury-loader');
+  if (luxuryLoader) {
+    lenis.stop(); // Prevent scrolling during loading phase
+    
+    const loaderTl = gsap.timeline({
+      onComplete: () => {
+        lenis.start();
+        luxuryLoader.style.display = 'none'; // Cleanup
+        // If there are intro animations, play them here
+      }
+    });
+
+    // 1. Thread drops down
+    loaderTl.to('.golden-thread', {
+      height: "50vh",
+      duration: 1.5,
+      ease: "power3.inOut"
+    })
+    // 2. Text fades in with a luxury blur
+    .fromTo('.luxury-text', 
+      { opacity: 0, filter: "blur(20px)", scale: 0.9 },
+      { opacity: 1, filter: "blur(0px)", scale: 1, duration: 2, ease: "power2.out" },
+      "-=0.5"
+    )
+    // 3. Pause for drama
+    .to({}, { duration: 0.5 })
+    // 4. Thread snaps horizontal
+    .to('.golden-thread', {
+      height: "2px",
+      width: "100vw",
+      top: "50vh",
+      duration: 0.4,
+      ease: "expo.inOut"
+    })
+    // 5. Flash and fade thread/text
+    .to(['.golden-thread', '.luxury-text'], {
+      opacity: 0,
+      duration: 0.2
+    })
+    // 6. Curtains open
+    .to('.top-panel', {
+      yPercent: -100,
+      duration: 1.5,
+      ease: "expo.inOut"
+    }, "<")
+    .to('.bottom-panel', {
+      yPercent: 100,
+      duration: 1.5,
+      ease: "expo.inOut"
+    }, "<");
+  }
+
+  // --- FULL SCREEN MENU LOGIC ---
   const menuToggle = document.querySelector('.menu-toggle');
   const fullscreenMenu = document.querySelector('.fullscreen-menu');
+  const menuOverlayBg = document.querySelector('.menu-overlay-bg');
   const menuLinks = document.querySelectorAll('.menu-link');
   const menuFooter = document.querySelector('.menu-footer');
   let isMenuOpen = false;
 
-  const menuTl = gsap.timeline({ paused: true, defaults: { ease: "power4.inOut", duration: 0.8 } });
-  
-  menuTl.to(fullscreenMenu, { visibility: "visible", duration: 0 })
-        .to('.menu-overlay-bg', { opacity: 0.98 }, 0)
-        .fromTo(menuLinks, 
-          { y: 50, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.8, ease: "power3.out" },
-          "-=0.4"
-        )
-        .fromTo(menuFooter,
-          { y: 20, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
-          "-=0.6"
-        );
+  const menuTl = gsap.timeline({ paused: true, defaults: { ease: "expo.inOut" } });
 
-  menuToggle.addEventListener('click', () => {
-    isMenuOpen = !isMenuOpen;
-    menuToggle.classList.toggle('active');
-    
-    if (isMenuOpen) {
-      lenis.stop(); // Stop scrolling while menu is open
-      menuTl.play();
-    } else {
-      lenis.start();
-      menuTl.reverse();
-    }
-  });
+  if (menuToggle && fullscreenMenu) {
+    menuTl
+      .to(fullscreenMenu, { visibility: "visible", pointerEvents: "auto", duration: 0 })
+      .to(menuOverlayBg, { opacity: 1, duration: 0.6 })
+      .to(menuLinks, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1 }, "-=0.4")
+      .to(menuFooter, { y: 0, opacity: 1, duration: 0.6 }, "-=0.6");
 
-  // Close menu on link click
-  document.querySelectorAll('.fullscreen-menu a').forEach(link => {
-    link.addEventListener('click', () => {
+    menuToggle.addEventListener('click', () => {
+      isMenuOpen = !isMenuOpen;
+      menuToggle.classList.toggle('menu-open');
+      
       if (isMenuOpen) {
-        menuToggle.click();
+        lenis.stop(); // Lock scroll
+        menuTl.play();
+      } else {
+        menuTl.reverse();
+        lenis.start(); // Unlock scroll
       }
     });
-  });
 
-  // Vertical Scroll Indicator Logic
-  const sections = document.querySelectorAll('section');
-  const navNumbers = document.querySelectorAll('.section-numbers .num');
-
-  sections.forEach((sec, i) => {
-    ScrollTrigger.create({
-      trigger: sec,
-      start: "top 50%",
-      end: "bottom 50%",
-      onToggle: self => {
-        if (self.isActive) {
-          const id = sec.getAttribute('id');
-          navNumbers.forEach(num => num.classList.remove('active'));
-          const activeNum = document.querySelector(`.section-numbers .num[data-section="${id}"]`);
-          if (activeNum) activeNum.classList.add('active');
-        }
-      }
-    });
-  });
-
-  // Narrative Section Pinning (The Pulse style)
-  if (document.querySelector('.narrative-section')) {
-    ScrollTrigger.create({
-      trigger: ".narrative-section",
-      start: "top top",
-      end: "bottom bottom",
-      pin: ".narrative-bg"
+    menuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        isMenuOpen = false;
+        menuToggle.classList.remove('menu-open');
+        menuTl.reverse();
+        lenis.start();
+      });
     });
   }
+
+  // Only run animations if not on a mobile device (optional optimization)
+  const isMobile = window.innerWidth < 768;
+  
+  // Navbar scroll effect removed (using floating nav instead)
 
   // Smooth scroll for anchor links using Lenis
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -428,56 +440,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 8. Custom Cinematic Cursor & 3D Mouse Parallax
+  // 8. Custom Cinematic Cursor
   const cursor = document.querySelector('.cursor');
   const links = document.querySelectorAll('a, .magnetic-btn, .gallery-stack-item');
-  const hero = document.querySelector('.hero');
-  const heroContent = document.querySelector('.hero-content');
-  const heroSlider = document.querySelector('.hero-slider');
 
+  // Center cursor on load if needed, otherwise it starts at 0,0
   gsap.set(cursor, {xPercent: -50, yPercent: -50});
 
-  // 3D Parallax & Tilt Effect
-  if (hero && heroContent && heroSlider) {
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
-      // Calculate normalized mouse position relative to hero section (-1 to 1)
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-
-      // 3D Tilt for Content
-      gsap.to(heroContent, {
-        rotationY: x * 15,
-        rotationX: -y * 15,
-        x: x * 40,
-        y: y * 40,
-        duration: 0.6,
-        ease: "power2.out"
-      });
-
-      // Opposite Parallax for Background
-      gsap.to(heroSlider, {
-        x: -x * 20,
-        y: -y * 20,
-        duration: 1.0,
-        ease: "power2.out"
-      });
-    });
-
-    hero.addEventListener('mouseleave', () => {
-      gsap.to([heroContent, heroSlider], {
-        rotationY: 0,
-        rotationX: 0,
-        x: 0,
-        y: 0,
-        duration: 1.2,
-        ease: "elastic.out(1, 0.5)"
-      });
-    });
-  }
-
   document.addEventListener('mousemove', (e) => {
-    // Update Custom Cursor
     gsap.to(cursor, {
       x: e.clientX,
       y: e.clientY,
@@ -489,31 +459,6 @@ document.addEventListener("DOMContentLoaded", () => {
   links.forEach(link => {
     link.addEventListener('mouseenter', () => cursor.classList.add('active'));
     link.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-  });
-
-  // Magnetic UI Elements Physics with Framer Motion (replaces GSAP for better physics)
-  const magneticEls = document.querySelectorAll('.magnetic-btn');
-  magneticEls.forEach(el => {
-    el.addEventListener('mousemove', (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left - rect.width / 2) * 0.4;
-      const y = (e.clientY - rect.top - rect.height / 2) * 0.4;
-      
-      animate(el, { x, y }, { type: "spring", stiffness: 150, damping: 15, mass: 0.1 });
-      
-      const text = el.querySelector('span');
-      if (text) {
-        animate(text, { x: x * 0.5, y: y * 0.5 }, { type: "spring", stiffness: 150, damping: 15, mass: 0.1 });
-      }
-    });
-
-    el.addEventListener('mouseleave', () => {
-      animate(el, { x: 0, y: 0 }, { type: "spring", stiffness: 150, damping: 15, mass: 0.1 });
-      const text = el.querySelector('span');
-      if (text) {
-        animate(text, { x: 0, y: 0 }, { type: "spring", stiffness: 150, damping: 15, mass: 0.1 });
-      }
-    });
   });
 
 });
